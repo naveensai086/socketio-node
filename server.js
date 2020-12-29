@@ -35,10 +35,10 @@ io.on('connection', (socket) => {
 
 
     //listen for chatMessage
-    socket.on('chatMessage', (msg) => {
+    socket.on('newMessage', (msg) => {
         console.log('message: ' + msg);
         //sending to all connected clients
-        io.emit("new user", msg);
+        io.emit("newMessage", msg);
     });
 
 
