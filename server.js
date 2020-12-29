@@ -10,7 +10,7 @@ const io = require('socket.io')(http
             credentials: true
         }
     });
-    
+
 
 app.use(cors());
 
@@ -19,25 +19,29 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-    console.log(socket.id);
-    console.log('a user connected');
-  
+     // welcome current user
+     socket.emit("new user", "Welcome to chat..");
+
+    //broadcating to all except new user
+    socket.broadcast.emit("new user", "new user joined");
+
+    //broadcasting to all for disconnection
     socket.on('disconnect', () => {
         console.log('user disconnected');
+        io.emit("new user", " user left the chat");
+    });
+   
+
+
+
+    //listen for chatMessage
+    socket.on('chatMessage', (msg) => {
+        console.log('message: ' + msg);
+        //sending to all connected clients
+        io.emit("new user", msg);
     });
 
-    //broadcating to all except sender
-    socket.broadcast.emit("hello", "new user joined");
 
-   //emitting events from server
-    socket.emit("hello", "world");
-
-
-
-    //listening events from client 
-    socket.on('message', (msg) => {
-        console.log('message: ' + msg);
-      });
 });
 
 
